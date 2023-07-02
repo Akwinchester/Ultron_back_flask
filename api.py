@@ -98,30 +98,32 @@ def initialize_app(app):
     api.init_app(app)
     login_manager.init_app(app)
 
-    # @app.after_request
-    # def add_cors_headers(response):
-    #     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-    #     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    #     response.headers['Access-Control-Allow-Methods'] = 'GET, POST'
-    #     return response
-
     @app.after_request
-    def show_session(respose):
-        print('\033[92m' +
-              f'''ВЫПОЛНЯЕТСЯ ПОСЛЕ КАЖДОГО ЗАПРОСА
-            Сессия пользователя: {session}
-            current_user: {current_user.is_authenticated}'''
-              + '\033[0m')
-        return respose
+    def add_cors_headers(response):
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST'
+        response.headers['Accept'] = 'application/json'
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
-    @app.before_request
-    def show_session():
-        print('----------------------------------------------------------------------------------------------------------')
-        print('')
-        print('')
-        print('\033[94m' +
-              f'''ВЫПОЛНЯЕТСЯ ПЕРЕД КАЖДЫМ ЗАПРОСОМ
-            Сессия пользователя: {session}
-            current_user.is_authenticated: {current_user.is_authenticated}'''
-              + '\033[0m')
-        print()
+    # @app.after_request
+    # def show_session(respose):
+    #     print('\033[92m' +
+    #           f'''ВЫПОЛНЯЕТСЯ ПОСЛЕ КАЖДОГО ЗАПРОСА
+    #         Сессия пользователя: {session}
+    #         current_user: {current_user.is_authenticated}'''
+    #           + '\033[0m')
+    #     return respose
+    #
+    # @app.before_request
+    # def show_session():
+    #     print('----------------------------------------------------------------------------------------------------------')
+    #     print('')
+    #     print('')
+    #     print('\033[94m' +
+    #           f'''ВЫПОЛНЯЕТСЯ ПЕРЕД КАЖДЫМ ЗАПРОСОМ
+    #         Сессия пользователя: {session}
+    #         current_user.is_authenticated: {current_user.is_authenticated}'''
+    #           + '\033[0m')
+    #     print()
