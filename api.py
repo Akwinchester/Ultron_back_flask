@@ -45,7 +45,7 @@ class LoginResource(Resource):
         print(current_user.is_authenticated)
         login_user(user)
         print(current_user.is_authenticated)
-        return {'message': 'Перенаправление пользователя', 'redirect_url': '/Profile'}, 302, {'Location':'/Profile'}
+        return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
 
     def get(self):
         if current_user.is_authenticated:
@@ -75,10 +75,10 @@ class LogoutResource(Resource):
         print(current_user.is_authenticated)
         logout_user()
         print(current_user.is_authenticated)
-        return {'message': 'Logout successful'}, 200
+        return {'message': 'Logout successful'}, 302, {'Location':'/home_page'}
 
 
-class DataResource(Resource):
+class Profile(Resource):
     def get(self):
         data = {"amount": 60, 'activity': 'Подтягивания', 'redirect_url': '/profile'}
         return data
@@ -90,10 +90,22 @@ class DataResource(Resource):
         return {"message": "Received POST request"}
 
 
+class HomePage(Resource):
+    def get(self):
+        data = {'redirect_url': '/'}
+        return data
+
+    def post(self):
+        data = request.get_json()
+
+        # Обработка POST-запроса
+        return {"message": "Received POST request"}
+
 api.add_resource(RegisterResource, '/api/register')
 api.add_resource(LoginResource, '/api/login')
 api.add_resource(LogoutResource, '/api/logout')
-api.add_resource(DataResource, '/Profile')
+api.add_resource(Profile, '/Profile')
+api.add_resource(HomePage, '/home_page')
 
 
 def initialize_app(app):
