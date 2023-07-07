@@ -9,6 +9,7 @@ api = Api()
 login_manager = LoginManager()
 
 
+
 class RegisterResource(Resource):
     def post(self):
         data = request.get_json()
@@ -41,9 +42,9 @@ class LoginResource(Resource):
         user = User.query.filter_by(username=username).first()
         if not user or not check_password_hash(user.password, password):
             return {'message': 'Invalid username or password'}, 401
-
+        print(current_user.is_authenticated)
         login_user(user)
-
+        print(current_user.is_authenticated)
         return {'message': 'Перенаправление пользователя', 'redirect_url': '/Profile'}, 302, {'Location':'/Profile'}
 
     def get(self):
@@ -73,17 +74,19 @@ class LogoutResource(Resource):
     def post(self):
         print(current_user.is_authenticated)
         logout_user()
-        return {'message': 'Logout successful'}, 200
+        print(current_user.is_authenticated)
+        return {'message': 'Перенаправление пользователя'}
 
 
 class DataResource(Resource):
+
     def get(self):
-        data = {"amount": 60, 'activity': 'Подтягивания', 'redirect_url': '/profile'}
+        data = {"amount": 60, 'activity': 'Подтягивания'}
         return data
 
     def post(self):
         data = request.get_json()
-        print(data)
+
         # Обработка POST-запроса
         return {"message": "Received POST request"}
 
@@ -98,6 +101,7 @@ def initialize_app(app):
     api.init_app(app)
     login_manager.init_app(app)
 
+
     @app.after_request
     def add_cors_headers(response):
         response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
@@ -105,19 +109,22 @@ def initialize_app(app):
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST'
         response.headers['Accept'] = 'application/json'
         response.headers['Content-Type'] = 'application/json'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+
         return response
 
-    # @app.after_request
-    # def show_session(respose):
-    #     print('\033[92m' +
-    #           f'''ВЫПОЛНЯЕТСЯ ПОСЛЕ КАЖДОГО ЗАПРОСА
-    #         Сессия пользователя: {session}
-    #         current_user: {current_user.is_authenticated}'''
-    #           + '\033[0m')
-    #     return respose
-    #
+
+
+    def print_information_after_request():
+        print('\033[92m' +
+              f'''ВЫПОЛНЯЕТСЯ ПОСЛЕ КАЖДОГО ЗАПРОСА
+            Сессия пользователя: {session}
+            current_user: {current_user.is_authenticated}'''
+              + '\033[0m')
+
+
     # @app.before_request
-    # def show_session():
+    # def print_information_before_request():
     #     print('----------------------------------------------------------------------------------------------------------')
     #     print('')
     #     print('')
@@ -127,3 +134,4 @@ def initialize_app(app):
     #         current_user.is_authenticated: {current_user.is_authenticated}'''
     #           + '\033[0m')
     #     print()
+

@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, current_user
+from flask import session
 
 db = SQLAlchemy()
 
@@ -12,9 +13,9 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    @property
     def is_authenticated(self):
-        return current_user.is_authenticated()
-
+        return '_user_id' in session
 
     def get_user(self, user_id):
         user = db.session.get(User, user_id)
