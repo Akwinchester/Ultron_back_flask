@@ -75,13 +75,12 @@ class LogoutResource(Resource):
         print(current_user.is_authenticated)
         logout_user()
         print(current_user.is_authenticated)
-        return {'message': 'Перенаправление пользователя'}
+        return {'message': 'Logout successful'}, 200
 
 
 class DataResource(Resource):
-
     def get(self):
-        data = {"amount": 60, 'activity': 'Подтягивания'}
+        data = {"amount": 60, 'activity': 'Подтягивания', 'redirect_url': '/profile'}
         return data
 
     def post(self):
@@ -134,4 +133,3 @@ def initialize_app(app):
     #         current_user.is_authenticated: {current_user.is_authenticated}'''
     #           + '\033[0m')
     #     print()
-
