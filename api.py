@@ -2,8 +2,10 @@ from flask import request, session
 from flask_restful import Api, Resource
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from models import User, db
+from models.models import User, db, Entry, Activity
 from flask_login import login_user, logout_user, current_user, login_required, login_manager, LoginManager
+from models.entery import formation_dataset_for_charts
+
 
 api = Api()
 login_manager = LoginManager()
@@ -42,9 +44,8 @@ class LoginResource(Resource):
         user = User.query.filter_by(username=username).first()
         if not user or not check_password_hash(user.password, password):
             return {'message': 'Invalid username or password'}, 401
-        print(current_user.is_authenticated)
         login_user(user)
-        print(current_user.is_authenticated)
+        formation_dataset_for_charts(72)
         return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
 
     def get(self):
@@ -80,7 +81,7 @@ class LogoutResource(Resource):
 
 class Profile(Resource):
     def get(self):
-        data = {"amount": 60, 'activity': 'Подтягивания', 'redirect_url': '/profile'}
+        data = {"amount": 60, 'activity': 'Подтягивания', 'redirect_url': '/profile', 'status':1}
         return data
 
     def post(self):
@@ -92,7 +93,7 @@ class Profile(Resource):
 
 class HomePage(Resource):
     def get(self):
-        data = {'redirect_url': '/'}
+        data = {'redirect_url': '/', 'status':0}
         return data
 
     def post(self):
