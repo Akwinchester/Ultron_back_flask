@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from models.models import User, db, Entry, Activity
 from flask_login import login_user, logout_user, current_user, login_required, login_manager, LoginManager
 from models.entery import formation_dataset_for_charts
+from models.activity import formation_list_activity
 
 
 api = Api()
@@ -29,7 +30,7 @@ class RegisterResource(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        return {'message': 'Registration successful'}, 201
+        return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
 
 
 class LoginResource(Resource):
@@ -45,7 +46,6 @@ class LoginResource(Resource):
         if not user or not check_password_hash(user.password, password):
             return {'message': 'Invalid username or password'}, 401
         login_user(user)
-        formation_dataset_for_charts(72)
         return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
 
     def get(self):
@@ -73,15 +73,14 @@ def request_loader(request):
 class LogoutResource(Resource):
     @login_required
     def post(self):
-        print(current_user.is_authenticated)
         logout_user()
-        print(current_user.is_authenticated)
         return {'message': 'Logout successful'}, 302, {'Location':'/home_page'}
 
 
 class Profile(Resource):
     def get(self):
-        data = {"amount": 60, 'activity': 'Подтягивания', 'redirect_url': '/profile', 'status':1}
+        data = {'redirect_url': '/profile'}
+        data.update(formation_list_activity(56))
         return data
 
     def post(self):
@@ -102,11 +101,25 @@ class HomePage(Resource):
         # Обработка POST-запроса
         return {"message": "Received POST request"}
 
+
+class DataForChart(Resource):
+    def get(self):
+        data = formation_list_activity(session.get('_user_id'))
+        return data
+
+    def post(self):
+        data = request.get_json()
+
+        # Обработка POST-запроса
+        return {"message": "Received POST request"}
+
+
 api.add_resource(RegisterResource, '/api/register')
 api.add_resource(LoginResource, '/api/login')
 api.add_resource(LogoutResource, '/api/logout')
 api.add_resource(Profile, '/Profile')
 api.add_resource(HomePage, '/home_page')
+api.add_resource(DataForChart, '/data_for_chart')
 
 
 def initialize_app(app):

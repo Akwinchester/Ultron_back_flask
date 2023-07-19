@@ -1,11 +1,23 @@
-from models.models import Entry
+from models.models import User, Activity, Entry, db
+
 
 def formation_dataset_for_charts(activity_id):
-    entries = Entry.query.filter(Entry.activity_id == activity_id).all()
-    data_for_charts = []
-    for entery in entries:
-        entery_object = {}
-        entery_object['date'] = entery.date_added
-        entery_object['amount'] = entery.amount
-        data_for_charts.append(entery_object)
-    return data_for_charts
+    data = db.session.query(
+        Entry.id,
+        User.name.label('name_user'),
+        Entry.amount,
+        Entry.date_added
+    ).join(Activity, Entry.activity_id == Activity.id).filter(
+        Entry.activity_id == activity_id
+    ).join(User, Activity.user_id == User.id).all()
+    formatted_data = []
+
+    for row in data:
+        formatted_data.append({
+            'id': row.id,
+            'name': row.name_user,
+            'amount': row.amount,
+            'date_added': row.date_added
+        })
+
+    return formatted_data
