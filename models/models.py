@@ -7,13 +7,17 @@ db = SQLAlchemy()
 
 user_activity = db.Table('user_activity',
                          db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-                         db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True)
+                         db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True),
+                         db.Column('address', db.Boolean, default=False),
+                         db.Column('add_entery', db.Boolean, default=False)
                          )
 
 user_friend = db.Table('user_friend',
                        db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
                        db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
                        )
+
+
 
 
 class User(db.Model, UserMixin):
@@ -65,6 +69,7 @@ class Activity(db.Model):
     name = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     notification_text = db.Column(db.String(500), default='')
+    status = db.Column(db.Boolean, default=True)
 
 
 class Entry(db.Model):

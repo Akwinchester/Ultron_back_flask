@@ -29,6 +29,7 @@ class RegisterResource(Resource):
         new_user = User(username=username, password=generate_password_hash(password))
         db.session.add(new_user)
         db.session.commit()
+        login_user(new_user)
 
         return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
 
@@ -109,9 +110,10 @@ class DataForChart(Resource):
 
     def post(self):
         data = request.get_json()
+        response_data = formation_dataset_for_charts(int(data['id']))
 
         # Обработка POST-запроса
-        return {"message": "Received POST request"}
+        return response_data, 200
 
 
 api.add_resource(RegisterResource, '/api/register')
