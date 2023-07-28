@@ -18,6 +18,10 @@ user_friend = db.Table('user_friend',
                        )
 
 
+activity_activity_table  = db.Table('activity_activity',
+                         db.Column('activity_one_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True),
+                         db.Column('activity_two_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True),
+                         )
 
 
 class User(db.Model, UserMixin):
@@ -70,6 +74,11 @@ class Activity(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     notification_text = db.Column(db.String(500), default='')
     status = db.Column(db.Boolean, default=True)
+    related_activities = db.relationship('Activity',
+                                          secondary=activity_activity_table,
+                                          primaryjoin=id == activity_activity_table.c.activity_one_id,
+                                          secondaryjoin=id == activity_activity_table.c.activity_two_id,
+                                          lazy='dynamic')
 
 
 class Entry(db.Model):

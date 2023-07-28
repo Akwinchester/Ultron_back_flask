@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from models.models import User, db, Entry, Activity
 from flask_login import login_user, logout_user, current_user, login_required, login_manager, LoginManager
-from models.entery import formation_dataset_for_charts
+from models.entery import formation_dataset_for_charts_only_you, formation_dataset_for_charts_rating
 from models.activity import formation_list_activity
 
 
@@ -110,9 +110,13 @@ class DataForChart(Resource):
 
     def post(self):
         data = request.get_json()
-        response_data = formation_dataset_for_charts(int(data['id']))
 
-        # Обработка POST-запроса
+
+        if data['StatusView'] == False:
+            response_data = formation_dataset_for_charts_only_you(data['id'])
+        else:
+            response_data = formation_dataset_for_charts_rating(data['id'])
+
         return response_data, 200
 
 
