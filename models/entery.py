@@ -1,5 +1,4 @@
 import re
-
 from models.models import User, Activity, Entry, db
 from models.activity import get_related_activity_ids
 from flask import session
@@ -60,7 +59,7 @@ def formation_dataset_for_charts_rating(activity_id):
             'date_added': str(row.date_added),
             'description': row.description
         })
-    print(formatted_data)
+
     merge_formatted_data = merge_entries(formatted_data)
     return merge_formatted_data
 
@@ -101,8 +100,7 @@ def delete_entry(id_entry):
     .join(Entry, Activity.id == Entry.activity_id) \
     .filter(Entry.id == id_entry) \
     .first()
-    print(session['_user_id'])
-    print(user.id)
+
     if entry and str(user.id) == str(session['_user_id']):
         db.session.delete(entry)
         db.session.commit()
@@ -112,7 +110,7 @@ def delete_entry(id_entry):
         return "Нельзя удалить эту запись"
 
 
-def delete_entry(id_entry, amount, description, date_added ):
+def edit_entry(data, id_entry):
     entry = db.session.get(Entry, id_entry)
 
     user = db.session.query(User.id) \
@@ -122,12 +120,21 @@ def delete_entry(id_entry, amount, description, date_added ):
     .first()
 
     if entry and str(user.id) == str(session['_user_id']):
-        entry.amount = amount
-        entry.date_added = date_added
-        entry.description = description
+        if data['amount'] != '':
+            entry.amount = data['amount']
+        if data['date_added'] != "":
+            entry.date_added = data['date_added']
+        if data['description'] != '':
+            entry.description = data['description']
 
         db.session.commit()
         db.session.close()
         return "Запись успешно отредактированна"
     else:
         return "Нельзя редактировать эту запись"
+
+
+def create_entry( data, activity_id):
+    entry = Entry(amount=data['amount'], description=data['description'], date_added=data['date_added'], activity_id=data['activity_id'])
+    db.session.add(entry)
+    return 'Запись успешно создана'

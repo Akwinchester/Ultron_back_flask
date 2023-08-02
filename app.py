@@ -1,7 +1,7 @@
 from flask import Flask
 from config import *
 from models.models import db
-from api import initialize_app
+from api.api import initialize_app
 
 app = Flask(__name__)
 app.secret_key = 'mysecretkey123'
