@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from models.models import User, db, Entry, Activity
 from flask_login import login_user, logout_user, current_user, login_required, login_manager, LoginManager
-from models.entery import formation_dataset_for_charts_only_you, formation_dataset_for_charts_rating
+from models.entery import formation_dataset_for_charts_only_you, formation_dataset_for_charts_rating, delete_entry
 from models.activity import formation_list_activity
 
 
@@ -106,11 +106,11 @@ class HomePage(Resource):
 class DataForChart(Resource):
     def get(self):
         data = formation_list_activity(session.get('_user_id'))
+
         return data
 
     def post(self):
         data = request.get_json()
-
 
         if data['StatusView'] == False:
             response_data = formation_dataset_for_charts_only_you(data['id'])
@@ -120,12 +120,20 @@ class DataForChart(Resource):
         return response_data, 200
 
 
+class DeleteEntry(Resource):
+    def delete(self, id_entry):
+
+        message = delete_entry(id_entry)
+        return {'message':message}, 200
+
+
 api.add_resource(RegisterResource, '/api/register')
 api.add_resource(LoginResource, '/api/login')
 api.add_resource(LogoutResource, '/api/logout')
 api.add_resource(Profile, '/Profile')
 api.add_resource(HomePage, '/home_page')
 api.add_resource(DataForChart, '/data_for_chart')
+api.add_resource(DeleteEntry, '/delete_entry/<int:id_entry>')
 
 
 def initialize_app(app):
@@ -137,13 +145,12 @@ def initialize_app(app):
     def add_cors_headers(response):
         response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, DELETE'
         response.headers['Accept'] = 'application/json'
         response.headers['Content-Type'] = 'application/json'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
 
         return response
-
 
 
     def print_information_after_request():
@@ -152,16 +159,3 @@ def initialize_app(app):
             Сессия пользователя: {session}
             current_user: {current_user.is_authenticated}'''
               + '\033[0m')
-
-
-    # @app.before_request
-    # def print_information_before_request():
-    #     print('----------------------------------------------------------------------------------------------------------')
-    #     print('')
-    #     print('')
-    #     print('\033[94m' +
-    #           f'''ВЫПОЛНЯЕТСЯ ПЕРЕД КАЖДЫМ ЗАПРОСОМ
-    #         Сессия пользователя: {session}
-    #         current_user.is_authenticated: {current_user.is_authenticated}'''
-    #           + '\033[0m')
-    #     print()
