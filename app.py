@@ -10,6 +10,7 @@ app.secret_key = 'mysecretkey123'
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = f'mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 db.init_app(app)
 app.debug = True
 
