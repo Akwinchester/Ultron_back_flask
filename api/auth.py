@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, make_response, session, redirect
 from flask_restful import  Resource
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -45,9 +45,12 @@ class LoginResource(Resource):
         if not user or not check_password_hash(user.password, password):
             return {'message': 'Invalid username or password'}, 401
         login_user(user)
-        print(user.is_authenticated)
+        # print(session)
+        # session_id = session['_id']
+        # response = make_response(redirect('/profile'))
+        # response.set_cookie('session_id', session_id, samesite='None', secure=True)
+        # return response
         return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
-
     def get(self):
         if current_user.is_authenticated:
             return {'message': 'User is authenticated'}
