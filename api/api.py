@@ -13,7 +13,7 @@ api.add_resource(HomePage, '/home_page')
 api.add_resource(DataForChart, '/data_for_chart')
 api.add_resource(DeleteEntry, '/delete_entry/<int:id_entry>')
 api.add_resource(EditEntry, '/edit_entry/<int:id_entry>')
-api.add_resource(CreateEntry, '/create_entry/<int:id_activity>')
+api.add_resource(CreateEntry, '/create_entry/<int:activity_id>')
 
 
 def initialize_app(app):

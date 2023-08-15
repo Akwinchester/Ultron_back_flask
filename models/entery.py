@@ -135,6 +135,9 @@ def edit_entry(data, id_entry):
 
 
 def create_entry( data, activity_id):
-    entry = Entry(amount=data['amount'], description=data['description'], date_added=data['date_added'], activity_id=data['activity_id'])
+    entry = Entry(amount=data['amount'], description=data['description'], date_added=data['date_added'], activity_id=activity_id)
     db.session.add(entry)
+    db.session.commit()
+    db.session.close()
     return 'Запись успешно создана'
+

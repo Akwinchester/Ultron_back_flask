@@ -20,9 +20,7 @@ class EditEntry(Resource):
 
 
 class CreateEntry(Resource):
-    def post(self,  id_activity):
+    def post(self,  activity_id):
         data_for_create = request.get_json()
-        # create_entry(data=data_for_create, id_activity=id_activity)
-        print(data_for_create)
-
+        create_entry(data=data_for_create, activity_id=activity_id)
         return 'Ok', 200

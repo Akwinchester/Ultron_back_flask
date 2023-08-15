@@ -27,14 +27,17 @@ class RegisterResource(Resource):
         login_user(new_user)
 
         return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
+    def get(self):
+        return {'message': 'Все окей'},
+
 
 
 class LoginResource(Resource):
     def post(self):
         data = request.get_json()
+
         username = data.get('username')
         password = data.get('password')
-
         if not username or not password:
             return {'message': 'Missing required fields'}, 400
 
@@ -42,6 +45,7 @@ class LoginResource(Resource):
         if not user or not check_password_hash(user.password, password):
             return {'message': 'Invalid username or password'}, 401
         login_user(user)
+        print(user.is_authenticated)
         return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
 
     def get(self):

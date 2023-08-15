@@ -8,7 +8,7 @@ from models.activity import formation_list_activity
 class DataForChart(Resource):
     def get(self):
         data = formation_list_activity(session.get('_user_id'))
-
+        print('запрос на отрисовку списка активностей, session.get(''):',session.get('_user_id'))
         return data
 
     def post(self):
@@ -19,4 +19,5 @@ class DataForChart(Resource):
         else:
             response_data = formation_dataset_for_charts_rating(data['id'])
 
+        print(response_data)
         return response_data, 200
