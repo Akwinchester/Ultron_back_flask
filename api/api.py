@@ -1,3 +1,4 @@
+from api.activity import CreateActivity, DeleteActivity, EditActivity
 from api.auth import RegisterResource, LogoutResource, LoginResource
 from api.chart import DataForChart
 from api.entry import DeleteEntry, EditEntry, CreateEntry
@@ -14,6 +15,9 @@ api.add_resource(DataForChart, '/data_for_chart')
 api.add_resource(DeleteEntry, '/delete_entry/<int:id_entry>')
 api.add_resource(EditEntry, '/edit_entry/<int:id_entry>')
 api.add_resource(CreateEntry, '/create_entry/<int:activity_id>')
+api.add_resource(CreateActivity, '/create_activity')
+api.add_resource(DeleteActivity, '/delete_activity/<int:activity_id>')
+api.add_resource(EditActivity, '/edit_activity/<int:activity_id>')
 
 
 def initialize_app(app):
