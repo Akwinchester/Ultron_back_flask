@@ -8,8 +8,11 @@ class CreateActivity(Resource):
     def post(self):
         activity_name = request.get_json()['name']
         notification_text = request.get_json()['notification_text']
-        create_activity(user_id=session.get('_user_id'), name_activity=activity_name, notification_text=notification_text)
-        return 'Ok', 200
+        new_activity_id = create_activity(user_id=session.get('_user_id'), name_activity=activity_name, notification_text=notification_text)
+
+        response = {new_activity_id:activity_name}
+
+        return response, 200
 
 
 class DeleteActivity(Resource):

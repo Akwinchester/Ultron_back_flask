@@ -26,13 +26,14 @@ def create_activity(user_id, name_activity, notification_text):
         new_activity = Activity(name=name_activity, user_id=user_id, notification_text=notification_text)
         db.session.add(new_activity)
         db.session.commit()
-
+        id = new_activity.id
     except Exception as e:
         print("Ошибка при создании активности:", str(e))
         db.session.rollback()
 
     finally:
         db.session.close()
+    return id
 
 
 def delete_activity(activity_id):

@@ -6,7 +6,7 @@ from flask import session
 def formation_dataset_for_charts_only_you(activity_id):
     data = db.session.query(
         Entry.id.label('id_entery'),
-        User.name.label('name_user'),
+        User.username.label('name_user'),
         User.id.label('id_user'),
         Entry.amount,
         Entry.date_added,
@@ -36,7 +36,7 @@ def formation_dataset_for_charts_rating(activity_id):
     data = (
         db.session.query(
             Entry.id.label('id_entery'),
-            User.name.label('name_user'),
+            User.username.label('name_user'),
             User.id.label('id_user'),
             Entry.amount,
             Entry.date_added,
