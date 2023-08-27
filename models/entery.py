@@ -19,7 +19,10 @@ def formation_dataset_for_charts_only_you(activity_id):
 
 
     # merge_formatted_data = merge_entries(formatted_data)
-    dataset = make_dataset(data)
+    if len(data) > 0:
+        dataset = make_dataset(data)
+    else:
+        dataset = []
     return dataset
 
 
@@ -54,7 +57,13 @@ def formation_dataset_for_charts_rating(activity_id):
         })
 
     # merge_formatted_data = merge_entries(formatted_data)
-    dataset = make_dataset(data)
+    if len(data) > 0:
+        dataset = make_dataset(data)
+    else:
+        dataset = []
+
+    print(f'\n{data}\n')
+    print(f'\n{dataset}\n')
     return dataset
 
 
@@ -163,8 +172,8 @@ def make_dataset(data):
         row[4] = 1
         user_id = row[2]
         if user_id not in dataset["entry_id"]:
-            dataset["entry_id"][user_id] = []
-            dataset["description"][user_id] = []
+            dataset["entry_id"][user_id] = ['' for i in dates]
+            dataset["description"][user_id] = ['' for i in dates]
         if user_id not in dataset["user_id"]:
             dataset["user_id"].append(user_id)
             dataset["name"][user_id] = row[1]
@@ -182,13 +191,6 @@ def enter_data(dataset, data, real_date, date_line):
                     for user in dataset['user_id']:
                         if user == row[2]:
                             dataset['amount'][user][date_line.index(date)] = row[3]
-                            dataset['description'][user].append(row[5])
-                            dataset['entry_id'][user].append(row[0])
-                        else:
-                            dataset['description'][user].append('')
-                            dataset['entry_id'][user].append('')
-        else:
-            for user in dataset['user_id']:
-                dataset['description'][user].append('')
-                dataset['entry_id'][user].append('')
+                            dataset['description'][user][date_line.index(date)] = row[5]
+                            dataset['entry_id'][user][date_line.index(date)] = row[0]
     return dataset
