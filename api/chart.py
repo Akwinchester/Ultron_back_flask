@@ -18,5 +18,4 @@ class DataForChart(Resource):
         else:
             response_data = formation_dataset_for_charts_rating(data['id'])
 
-        print(response_data)
         return response_data, 200

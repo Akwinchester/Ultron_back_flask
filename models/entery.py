@@ -2,32 +2,25 @@ import re
 from models.models import User, Activity, Entry, db
 from models.activity import get_related_activity_ids
 from flask import session
+from datetime import timedelta
+
 
 def formation_dataset_for_charts_only_you(activity_id):
     data = db.session.query(
-        Entry.id.label('id_entery'),
-        User.username.label('name_user'),
-        User.id.label('id_user'),
+        Entry.id.label('entry_id'),
+        User.username.label('user_name'),
+        User.id.label('user_id'),
         Entry.amount,
         Entry.date_added,
         Entry.description
     ).join(Activity, Entry.activity_id == Activity.id).filter(
         Entry.activity_id == activity_id
     ).join(User, Activity.user_id == User.id).all()
-    formatted_data = []
 
-    for row in data:
-        formatted_data.append({
-            'id_user': row.id_user,
-            'id_entery': row.id_entery,
-            'name': row.name_user,
-            'amount': row.amount,
-            'date_added': str(row.date_added),
-            'description': row.description
-        })
 
-    merge_formatted_data = merge_entries(formatted_data)
-    return merge_formatted_data
+    # merge_formatted_data = merge_entries(formatted_data)
+    dataset = make_dataset(data)
+    return dataset
 
 
 def formation_dataset_for_charts_rating(activity_id):
@@ -35,7 +28,7 @@ def formation_dataset_for_charts_rating(activity_id):
 
     data = (
         db.session.query(
-            Entry.id.label('id_entery'),
+            Entry.id.label('id_entry'),
             User.username.label('name_user'),
             User.id.label('id_user'),
             Entry.amount,
@@ -53,15 +46,16 @@ def formation_dataset_for_charts_rating(activity_id):
     for row in data:
         formatted_data.append({
             'id_user': row.id_user,
-            'id_entery': row.id_entery,
+            'id_entry': row.id_entry,
             'name': row.name_user,
             'amount': row.amount,
             'date_added': str(row.date_added),
             'description': row.description
         })
 
-    merge_formatted_data = merge_entries(formatted_data)
-    return merge_formatted_data
+    # merge_formatted_data = merge_entries(formatted_data)
+    dataset = make_dataset(data)
+    return dataset
 
 
 def merge_entries(data):
@@ -72,7 +66,7 @@ def merge_entries(data):
         if key not in merged_data:
             merged_data[key] = {
                 'id_user': entry['id_user'],
-                'id_entery': entry['id_entery'],
+                'id_entry': entry['id_entry'],
                 'name': entry['name'],
                 'amount': entry['amount'],
                 'date_added': entry['date_added'],
@@ -141,3 +135,60 @@ def create_entry( data, activity_id):
     db.session.close()
     return 'Запись успешно создана'
 
+
+def make_dataset(data):
+
+    dataset = {
+        "date": [],
+        "amount": {},
+        "entry_id": {},
+        "description": {},
+        "user_id": [],
+        "name": {}
+    }
+
+    real_date = []
+
+    start_date = min(row[4] for row in data)
+    end_date = max(row[4] for row in data)
+
+    delta = end_date - start_date
+    dates = [start_date + timedelta(days=i) for i in range(delta.days + 1)]
+
+    dataset["date"] = [d.strftime("%m-%d") for d in dates]
+
+    for row in data:
+        real_date.append(row[4])
+        row = list(row)
+        row[4] = 1
+        user_id = row[2]
+        if user_id not in dataset["entry_id"]:
+            dataset["entry_id"][user_id] = []
+            dataset["description"][user_id] = []
+        if user_id not in dataset["user_id"]:
+            dataset["user_id"].append(user_id)
+            dataset["name"][user_id] = row[1]
+        dataset['amount'][user_id] = [0 for i in dates]
+    dataset = enter_data(dataset, data, real_date, dates)
+    sorted(dataset['user_id'])
+    return dataset
+
+
+def enter_data(dataset, data, real_date, date_line):
+    for date in date_line:
+        if date in real_date:
+            for row in data:
+                if row[4] == date:
+                    for user in dataset['user_id']:
+                        if user == row[2]:
+                            dataset['amount'][user][date_line.index(date)] = row[3]
+                            dataset['description'][user].append(row[5])
+                            dataset['entry_id'][user].append(row[0])
+                        else:
+                            dataset['description'][user].append('')
+                            dataset['entry_id'][user].append('')
+        else:
+            for user in dataset['user_id']:
+                dataset['description'][user].append('')
+                dataset['entry_id'][user].append('')
+    return dataset
