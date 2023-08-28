@@ -62,8 +62,6 @@ def formation_dataset_for_charts_rating(activity_id):
     else:
         dataset = []
 
-    print(f'\n{data}\n')
-    print(f'\n{dataset}\n')
     return dataset
 
 
