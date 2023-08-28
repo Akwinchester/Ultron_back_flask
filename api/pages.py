@@ -7,8 +7,6 @@ from models.models import User
 class Profile(Resource):
     def get(self):
         data = {'redirect_url': '/profile'}
-        data['user_name'] = user.username
-
         return data
 
 
