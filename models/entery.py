@@ -132,9 +132,9 @@ def edit_entry(data, id_entry):
 
         db.session.commit()
         db.session.close()
-        return "Запись успешно отредактированна"
+        return "Record successfully edited"
     else:
-        return "Нельзя редактировать эту запись"
+        return "This entry cannot be edited"
 
 
 def create_entry( data, activity_id):

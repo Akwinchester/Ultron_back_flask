@@ -1,3 +1,5 @@
+from api.pages import UserName
+
 from api.activity import CreateActivity, DeleteActivity, EditActivity
 from api.auth import RegisterResource, LogoutResource, LoginResource
 from api.chart import DataForChart
@@ -18,6 +20,7 @@ api.add_resource(CreateEntry, '/create_entry/<int:activity_id>')
 api.add_resource(CreateActivity, '/create_activity')
 api.add_resource(DeleteActivity, '/delete_activity/<int:activity_id>')
 api.add_resource(EditActivity, '/edit_activity/<int:activity_id>')
+api.add_resource(UserName, '/get_username')
 
 
 def initialize_app(app):

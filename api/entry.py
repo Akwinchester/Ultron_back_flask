@@ -14,9 +14,9 @@ class DeleteEntry(Resource):
 class EditEntry(Resource):
     def post(self,  id_entry):
         data_for_edit = request.get_json()
-        edit_entry(id_entry=id_entry, data=data_for_edit)
+        response = edit_entry(id_entry=id_entry, data=data_for_edit)
 
-        return 'Ok', 200
+        return response, 200
 
 
 class CreateEntry(Resource):
