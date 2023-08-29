@@ -14,12 +14,14 @@ class Profile(Resource):
 class HomePage(Resource):
     def get(self):
         data = {'redirect_url': '/', 'status':0}
+
         return data
 
 
 class UserName(Resource):
     def get(self):
         user = User()
+        print(session.get('_user_id'))
         user = user.get_user(session.get('_user_id'))
         data = {'userName':user.username}
         return data, 200
