@@ -50,7 +50,7 @@ class LoginResource(Resource):
         # response = make_response(redirect('/profile'))
         # response.set_cookie('session_id', session_id, samesite='None', secure=True)
         # return response
-        return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
+        return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/api/Profile'}
     def get(self):
         if current_user.is_authenticated:
             return {'message': 'User is authenticated'}
@@ -77,4 +77,4 @@ class LogoutResource(Resource):
     @login_required
     def post(self):
         logout_user()
-        return {'message': 'Logout successful'}, 302, {'Location':'/home_page'}
+        return {'message': 'Logout successful'}, 302, {'Location':'/api/home_page'}
