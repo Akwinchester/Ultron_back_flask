@@ -30,7 +30,7 @@ def initialize_app(app):
 
     @app.after_request
     def add_cors_headers(response):
-        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000, http://95.163.250.203'
+        # response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000, http://95.163.250.203'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, DELETE'
         response.headers['Accept'] = 'application/json'

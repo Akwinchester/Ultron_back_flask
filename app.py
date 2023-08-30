@@ -15,7 +15,7 @@ app.config['SESSION_COOKIE_SECURE'] = True
 db.init_app(app)
 app.debug = True
 
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 initialize_app(app)
 if __name__ == '__main__':
