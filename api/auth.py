@@ -26,7 +26,7 @@ class RegisterResource(Resource):
         db.session.commit()
         login_user(new_user)
 
-        return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/Profile'}
+        return {'message': 'Перенаправление пользователя'}, 302, {'Location':'/api/Profile'}
     def get(self):
         return {'message': 'Все окей'},
 
